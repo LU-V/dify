@@ -63,16 +63,14 @@ User Input:
 
 SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
     """
-    # Optimized Prompt Using CO-STAR Framework
-    
-    ## Instructions
+    # Instructions
     
     Based on the {topic} topic, predict the three most likely questions a human would ask. Ensure each question is under 20 characters.
     
     The output must be an array in JSON format following this schema:
     ["question1", "question2", "question3"]
     
-    ## Example
+    # Example
     
     **Input1:**
     
