@@ -173,4 +173,3 @@ class LLMGenerator:
 
         answer = response.message.content
         return answer.strip()
-LLMGenerator.generate_suggested_questions_after_answer("english")
