@@ -64,7 +64,7 @@ User Input:
 SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
     """
     # Instructions
-    Based on the {topic} topic, predict the three most likely questions a human would ask. Ensure each question is under 20 characters.
+    Based on the {topic} topic, predict the three most likely Chinese questions a human would ask. Ensure each question is under 20 characters.
     
     The output must be an array in JSON format following this schema:
     ["question1", "question2", "question3"]
@@ -75,11 +75,11 @@ SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
 
     # Example
     **Input:**
-    {topic} = "Machine Learning"
+    {topic} = "机器学习"
     
     **Output:**
     ```json
-    ["What is ML", "How does ML work", "Applications of ML"]
+    ["什么是机器学习", "机器学习怎么工作", "机器学习的应用"]
     ```
     """
 )
