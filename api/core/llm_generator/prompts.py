@@ -71,22 +71,6 @@ SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
     ["question1", "question2", "question3"]
     
     # Example
-    
-    **Input1:**
-    
-    {topic} = "Machine Learning"
-    
-    **Output1:**
-    
-    ```json
-    ["What is ML", "How does ML work", "Applications of ML"]
-    ```
-    **Input2:**
-    
-    {topic} = "财富事业"
-    
-    **Output2:**
-
     ```json
     ["我适合的行业或职业方向是什么", "我适不适合创业", "我和财富的关系是什么"]
     ```
