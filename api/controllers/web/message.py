@@ -163,13 +163,15 @@ class MessageSuggestedQuestionApi(WebApiResource):
             raise NotCompletionAppError()
 
         message_id = str(message_id)
+        topic = "wealth"
 
         try:
             questions = MessageService.get_suggested_questions_after_answer(
                 app_model=app_model,
                 user=end_user,
                 message_id=message_id,
-                invoke_from=InvokeFrom.WEB_APP
+                invoke_from=InvokeFrom.WEB_APP,
+                topic=topic,
             )
         except MessageNotExistsError:
             raise NotFound("Message not found")
