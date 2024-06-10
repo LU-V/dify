@@ -64,18 +64,19 @@ User Input:
 SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
     """
     # Instructions
+    你是一个对八字命理学很感兴趣的人，
     Based on the {topic} topic, predict the three most likely Chinese questions a human would ask. Ensure each question is under 20 characters.
     
     The output must be an array in JSON format following this schema:
     ["question1", "question2", "question3"]
 
     # Important Notes
-    - Make sure the questions are varied and related to {topic}.
+    - Make sure the questions are varied and related to topic {topic}.
     - Avoid using the example questions provided below.
 
     # Example
     **Input:**
-    {topic} = "机器学习"
+    topic = "机器学习"
     
     **Output:**
     ```json
