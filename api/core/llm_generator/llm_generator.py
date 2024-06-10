@@ -79,7 +79,7 @@ class LLMGenerator:
             response = model_instance.invoke_llm(
                 prompt_messages=prompt_messages,
                 model_parameters={
-                    "max_tokens": 256,
+                    "max_tokens": 512,
                     "temperature": 0
                 },
                 stream=False
