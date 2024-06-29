@@ -175,6 +175,8 @@ def verify_token(token):
         raise Unauthorized('Invalid token signature.')
     except jwt.exceptions.DecodeError:
         raise Unauthorized('Invalid token.')
+    except jwt.exceptions.ExpiredSignatureError:
+        raise Unauthorized('Token has expired.')
 
 
 def validate_and_get_api_token(scope=None):
