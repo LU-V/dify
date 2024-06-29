@@ -194,18 +194,18 @@ def validate_and_get_api_token(scope=None):
         raise Unauthorized("Authorization scheme must be 'Bearer'")
 
     # === ADD token to api-key ===
-    from datetime import datetime, timedelta
-    decoded = verify_token(auth_token)
-    now = datetime.utcnow()
-    # 获取当前时间
-    timestamp = int(now.timestamp())
-    # 获取秒级时间戳
-    if decoded['exp'] < timestamp:
-        raise Unauthorized('Token has expired')
-    api_key = decoded['api_key']
+    if scope == "app":
+        decoded = verify_token(auth_token)
+        now = datetime.utcnow()
+        # 获取当前时间
+        timestamp = int(now.timestamp())
+        # 获取秒级时间戳
+        if decoded['exp'] < timestamp:
+            raise Unauthorized('Token has expired')
+        auth_token = decoded['api_key']
     # ==============================
     api_token = db.session.query(ApiToken).filter(
-        ApiToken.token == api_key,
+        ApiToken.token == auth_token,
         ApiToken.type == scope,
     ).first()
 
