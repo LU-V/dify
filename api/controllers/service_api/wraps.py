@@ -166,6 +166,19 @@ def validate_dataset_token(view=None):
     return decorator
 
 
+def verify_token(token):
+    import jwt
+    sk = "sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U"
+    try:
+        return jwt.decode(token, sk, algorithms=['HS256'])
+    except jwt.exceptions.InvalidSignatureError:
+        raise Unauthorized('Invalid token signature.')
+    except jwt.exceptions.DecodeError:
+        raise Unauthorized('Invalid token.')
+    except jwt.exceptions.ExpiredSignatureError:
+        raise Unauthorized('Token has expired.')
+
+
 def validate_and_get_api_token(scope=None):
     """
     Validate and get API token.
@@ -180,6 +193,17 @@ def validate_and_get_api_token(scope=None):
     if auth_scheme != 'bearer':
         raise Unauthorized("Authorization scheme must be 'Bearer'")
 
+    # === ADD token to api-key ===
+    if scope == "app":
+        decoded = verify_token(auth_token)
+        now = datetime.utcnow()
+        # 获取当前时间
+        timestamp = int(now.timestamp())
+        # 获取秒级时间戳
+        if decoded['exp'] < timestamp:
+            raise Unauthorized('Token has expired')
+        auth_token = decoded['api_key']
+    # ==============================
     api_token = db.session.query(ApiToken).filter(
         ApiToken.token == auth_token,
         ApiToken.type == scope,
