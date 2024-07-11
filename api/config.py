@@ -9,7 +9,7 @@ DEFAULTS = {
     'DB_USERNAME': 'postgres',
     'DB_PASSWORD': '',
     'DB_HOST': 'localhost',
-    'DB_PORT': '6432',
+    'DB_PORT': '5432',
     'DB_DATABASE': 'dify',
     'DB_CHARSET': '',
     'REDIS_HOST': 'localhost',

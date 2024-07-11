@@ -46,7 +46,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: difyai123456
       DB_HOST: db
-      DB_PORT: 6432
+      DB_PORT: 5432
       DB_DATABASE: dify
       # The configurations of redis connection.
       # It is consistent with the configuration in the 'redis' service below.
@@ -124,13 +124,13 @@ services:
       MILVUS_SECURE: 'false'
       # relyt configurations
       RELYT_HOST: db
-      RELYT_PORT: 6432
+      RELYT_PORT: 5432
       RELYT_USER: postgres
       RELYT_PASSWORD: difyai123456
       RELYT_DATABASE: postgres
       # pgvector configurations
       PGVECTOR_HOST: pgvector
-      PGVECTOR_PORT: 6432
+      PGVECTOR_PORT: 5432
       PGVECTOR_USER: postgres
       PGVECTOR_PASSWORD: difyai123456
       PGVECTOR_DATABASE: dify
@@ -214,7 +214,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: difyai123456
       DB_HOST: db
-      DB_PORT: 6432
+      DB_PORT: 5432
       DB_DATABASE: dify
       # The configurations of redis cache connection.
       REDIS_HOST: redis
@@ -285,13 +285,13 @@ services:
       RESEND_API_URL: https://api.resend.com
       # relyt configurations
       RELYT_HOST: db
-      RELYT_PORT: 6432
+      RELYT_PORT: 5432
       RELYT_USER: postgres
       RELYT_PASSWORD: difyai123456
       RELYT_DATABASE: postgres
       # pgvector configurations
       PGVECTOR_HOST: pgvector
-      PGVECTOR_PORT: 6432
+      PGVECTOR_PORT: 5432
       PGVECTOR_USER: postgres
       PGVECTOR_PASSWORD: difyai123456
       PGVECTOR_DATABASE: dify
@@ -353,7 +353,7 @@ services:
       - ./volumes/db/data:/var/lib/postgresql/data
     # uncomment to expose db(postgresql) port to host
     ports:
-       - "6432:5432"
+       - "5432:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
