@@ -401,7 +401,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: fatemate/dify-sandbox:0.2.1
+    image: langgenius/dify-sandbox:0.2.1
     restart: always
     environment:
       # The DifySandbox configurations
