@@ -320,7 +320,7 @@ services:
 
   # Frontend web application.
   web:
-    image: langgenius/dify-web:0.7.3
+    image: fatemate/dify-web:0.7.3
     restart: always
     environment:
       # The base URL of console application api server, refers to the Console base URL of WEB service if console domain is
@@ -401,7 +401,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: langgenius/dify-sandbox:0.2.1
+    image: fatemate/dify-sandbox:0.2.1
     restart: always
     environment:
       # The DifySandbox configurations
