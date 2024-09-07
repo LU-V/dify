@@ -192,10 +192,15 @@ class MessageSuggestedQuestionApi(Resource):
     @get_app_model(mode=[AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT])
     def get(self, app_model, message_id):
         message_id = str(message_id)
+        topic = "wealth"
 
         try:
             questions = MessageService.get_suggested_questions_after_answer(
-                app_model=app_model, message_id=message_id, user=current_user, invoke_from=InvokeFrom.DEBUGGER
+                app_model=app_model,
+                message_id=message_id,
+                user=current_user,
+                invoke_from=InvokeFrom.DEBUGGER,
+                topic=topic
             )
         except MessageNotExistsError:
             raise NotFound("Message not found")

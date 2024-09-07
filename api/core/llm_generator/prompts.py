@@ -62,11 +62,27 @@ User Input:
 """
 
 SUGGESTED_QUESTIONS_AFTER_ANSWER_INSTRUCTION_PROMPT = (
-    "Please help me predict the three most likely questions that human would ask, "
-    "and keeping each question under 20 characters.\n"
-    "MAKE SURE your output is the SAME language as the Assistant's latest response(if the main response is written in Chinese, then the language of your output must be using Chinese.)!\n"
-    "The output must be an array in JSON format following the specified schema:\n"
-    "[\"question1\",\"question2\",\"question3\"]\n"
+    """
+    # Instructions
+    你是一个对八字命理学很感兴趣的人，
+    Based on the {topic} topic, predict the three most likely Chinese questions a human would ask. Ensure each question is under 20 characters.
+    
+    The output must be an array in JSON format following this schema:
+    ["question1", "question2", "question3"]
+
+    # Important Notes
+    - Make sure the questions are varied and related to topic {topic}.
+    - Avoid using the example questions provided below.
+
+    # Example
+    **Input:**
+    topic = "机器学习"
+    
+    **Output:**
+    ```json
+    ["什么是机器学习", "机器学习怎么工作", "机器学习的应用"]
+    ```
+    """
 )
 
 GENERATOR_QA_PROMPT = (

@@ -75,9 +75,9 @@ class LLMGenerator:
         return name
 
     @classmethod
-    def generate_suggested_questions_after_answer(cls, tenant_id: str, histories: str):
+    def generate_suggested_questions_after_answer(cls, tenant_id: str, histories: str, topic: str):
         output_parser = SuggestedQuestionsAfterAnswerOutputParser()
-        format_instructions = output_parser.get_format_instructions()
+        format_instructions = output_parser.get_format_instructions().format(topic=topic)
 
         prompt_template = PromptTemplateParser(
             template="{{histories}}\n{{format_instructions}}\nquestions:\n"
@@ -103,7 +103,7 @@ class LLMGenerator:
             response = model_instance.invoke_llm(
                 prompt_messages=prompt_messages,
                 model_parameters={
-                    "max_tokens": 256,
+                    "max_tokens": 512,
                     "temperature": 0
                 },
                 stream=False
