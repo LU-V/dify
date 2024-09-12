@@ -14,11 +14,11 @@ if [ "${NGINX_HTTPS_ENABLED}" = "true" ]; then
     export SSL_CERTIFICATE_PATH
     export SSL_CERTIFICATE_KEY_PATH
 
-    # set the HTTPS_CONFIG environment variable to the content of the https.conf.template
-    HTTPS_CONFIG=$(envsubst < /etc/nginx/https.conf.template)
-    export HTTPS_CONFIG
-    # Substitute the HTTPS_CONFIG in the default.conf with content from https.conf.template
-    envsubst '${HTTPS_CONFIG}' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
+#    # set the HTTPS_CONFIG environment variable to the content of the https.conf.template
+#    HTTPS_CONFIG=$(envsubst < /etc/nginx/https.conf.template)
+#    export HTTPS_CONFIG
+#    # Substitute the HTTPS_CONFIG in the default.conf with content from https.conf.template
+#    envsubst '${HTTPS_CONFIG}' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 fi
 
 if [ "${NGINX_ENABLE_CERTBOT_CHALLENGE}" = "true" ]; then
