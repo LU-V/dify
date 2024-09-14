@@ -204,9 +204,15 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
                     logging.error(f'itemitemitemitemitemitemitem: {item}')
                     logging.error(f'typetypetypetypetypetypetype: {type(item)}')
 
+                    data = json.loads(item)
+                    logging.error(f'json.loads(item): {data}')
+
+                    data = data.get('data')
+                    logging.error(f'data.get(data): {data}')
 
                     # 获取 event 字段
-                    event = item.get('event')
+                    event = data.get('event')
+                    logging.error(f'data.get(event): {event}')
 
                     if event in event_list:
                         yield item  # 直接返回原始字符串
