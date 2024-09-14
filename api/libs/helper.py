@@ -199,12 +199,19 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
     else:
         def generate() -> Generator:
             for item in response:
-                data = item.get('data')
-                event = data.get('event')
+                try:
+                    # 解析字符串为 JSON
+                    data = json.loads(item)
 
-                if event in event_list:
-                    yield item
-                else:
+                    # 获取 event 字段
+                    event = data.get('event')
+
+                    if event in event_list:
+                        yield item  # 直接返回原始字符串
+                    else:
+                        yield json.dumps({})  # 返回空字典的 JSON 字符串
+
+                except json.JSONDecodeError:
                     yield json.dumps({})
 
         return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
