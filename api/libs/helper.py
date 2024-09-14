@@ -202,11 +202,11 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
                 try:
                     # 解析字符串为 JSON
                     logging.error(f'itemitemitemitemitemitemitem: {item}')
-                    data = json.loads(item)
-                    data = data.get('data')
+                    logging.error(f'typetypetypetypetypetypetype: {type(item)}')
+
 
                     # 获取 event 字段
-                    event = data.get('event')
+                    event = item.get('event')
 
                     if event in event_list:
                         yield item  # 直接返回原始字符串
