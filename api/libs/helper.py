@@ -186,6 +186,28 @@ def compact_generate_response(response: Union[dict, RateLimitGenerator]) -> Resp
 
         return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
 
+def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], event_list: []) -> Response:
+
+    if isinstance(response, dict):
+        data = response.get('data')
+        event = data.get('event')
+
+        if event in event_list:
+            return Response(response=json.dumps(response), status=200, mimetype="application/json")
+        else:
+            return Response(response=json.dumps({}), status=200, mimetype="application/json")
+    else:
+        def generate() -> Generator:
+            for item in response:
+                data = item.get('data')
+                event = data.get('event')
+
+                if event in event_list:
+                    yield item
+                else:
+                    yield json.dumps({})
+
+        return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
 
 class TokenManager:
     @classmethod
