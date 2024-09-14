@@ -117,7 +117,9 @@ class ChatApi(Resource):
                 app_model=app_model, user=end_user, args=args, invoke_from=InvokeFrom.SERVICE_API, streaming=streaming
             )
 
-            return helper.compact_generate_response(response)
+            return helper.compact_generate_response_filter(response,
+                                                           ['message', 'message_end', 'message_replace', 'error',
+                                                            'ping'])
         except services.errors.conversation.ConversationNotExistsError:
             raise NotFound("Conversation Not Exists.")
         except services.errors.conversation.ConversationCompletedError:
