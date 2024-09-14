@@ -202,6 +202,7 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
                 try:
                     # 解析字符串为 JSON
                     data = json.loads(item)
+                    data = data.get('data')
 
                     # 获取 event 字段
                     event = data.get('event')
