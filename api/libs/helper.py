@@ -201,6 +201,7 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
             for item in response:
                 try:
                     # 解析字符串为 JSON
+                    logging.error(f'itemitemitemitemitemitemitem: {item}')
                     data = json.loads(item)
                     data = data.get('data')
 
