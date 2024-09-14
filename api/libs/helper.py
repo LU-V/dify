@@ -201,14 +201,17 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
             for item in response:
                 try:
                     # 解析字符串为 JSON
+
+                    # 移除 'data: ' 前缀（如果存在）
+                    if item.startswith('data: '):
+                        item = item[6:]
                     logging.error(f'itemitemitemitemitemitemitem: {item}')
 
+                    # 解析 JSON
                     data = json.loads(item)
-                    logging.error(f'json.loads(item): {data}')
-                    data = data.get('data')
-                    # 获取 event 字段
+                    logging.error(f'itemitemitemitemitemitemitem: {item}')
+
                     event = data.get('event')
-                    logging.error(f'data.get(event): {event}')
 
                     if event in event_list:
                         yield item  # 直接返回原始字符串
