@@ -200,26 +200,24 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
         def generate() -> Generator:
             for item in response:
                 try:
-                    # 解析字符串为 JSON
-
                     # 移除 'data: ' 前缀（如果存在）
                     if item.startswith('data: '):
                         item = item[6:]
-                    logging.error(f'itemitemitemitemitemitemitem: {item}')
 
                     # 解析 JSON
                     data = json.loads(item)
-                    logging.error(f'itemitemitemitemitemitemitem: {item}')
-
                     event = data.get('event')
 
                     if event in event_list:
-                        yield item  # 直接返回原始字符串
+                        # 保持原始格式输出
+                        yield f'data: {json.dumps(data)}\n\n'
                     else:
-                        yield json.dumps({})  # 返回空字典的 JSON 字符串
+                        # 对于不在 event_list 中的事件，返回空的 data 行
+                        yield 'data: {}\n\n'
 
                 except json.JSONDecodeError:
-                    yield json.dumps({})
+                    # 如果 JSON 解析失败，返回空的 data 行
+                    yield 'data: {}\n\n'
 
         return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
 
