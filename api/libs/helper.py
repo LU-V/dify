@@ -186,14 +186,16 @@ def compact_generate_response(response: Union[dict, RateLimitGenerator]) -> Resp
 
         return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
 
-def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], event_list: []) -> Response:
 
+def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], event_list: list) -> Response:
     if isinstance(response, dict):
-        data = response.get('data')
+        data = response.get('data', {})
         event = data.get('event')
 
         if event in event_list:
-            return Response(response=json.dumps(response), status=200, mimetype="application/json")
+            if event == 'message_end':
+                data.pop('metadata', None)
+            return Response(response=json.dumps(data), status=200, mimetype="application/json")
         else:
             return Response(response=json.dumps({}), status=200, mimetype="application/json")
     else:
@@ -209,15 +211,17 @@ def compact_generate_response_filter(response: Union[dict, RateLimitGenerator], 
                     event = data.get('event')
 
                     if event in event_list:
-                        # 保持原始格式输出
+                        if event == 'message_end':
+                            # 对于 message_end 事件，移除 metadata
+                            data.pop('metadata', None)
+
+                        # 直接输出处理后的 data，不再嵌套
                         yield f'data: {json.dumps(data)}\n\n'
-                    else:
-                        # 对于不在 event_list 中的事件，返回空的 data 行
-                        yield 'data: {}\n\n'
+                    # 如果事件不在 event_list 中，不返回任何内容
 
                 except json.JSONDecodeError:
-                    # 如果 JSON 解析失败，返回空的 data 行
-                    yield 'data: {}\n\n'
+                    # JSON 解析失败时不返回任何内容
+                    pass
 
         return Response(stream_with_context(generate()), status=200, mimetype="text/event-stream")
 
