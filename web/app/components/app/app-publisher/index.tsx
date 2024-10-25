@@ -5,7 +5,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
-import classNames from 'classnames'
+import { RiArrowDownSLine } from '@remixicon/react'
 import type { ModelAndParameter } from '../configuration/debug/types'
 import SuggestedAction from './suggested-action'
 import PublishWithMultipleModel from './publish-with-multiple-model'
@@ -18,13 +18,13 @@ import {
 import EmbeddedModal from '@/app/components/app/overview/embedded'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import { useGetLanguage } from '@/context/i18n'
-import { ChevronDown } from '@/app/components/base/icons/src/vender/line/arrows'
 import { PlayCircle } from '@/app/components/base/icons/src/vender/line/mediaAndDevices'
 import { CodeBrowser } from '@/app/components/base/icons/src/vender/line/development'
 import { LeftIndent02 } from '@/app/components/base/icons/src/vender/line/editor'
 import { FileText } from '@/app/components/base/icons/src/vender/line/files'
 import WorkflowToolConfigureButton from '@/app/components/tools/workflow-tool/configure-button'
 import type { InputVar } from '@/app/components/workflow/types'
+import { appDefaultIconBackground } from '@/config'
 
 export type AppPublisherProps = {
   disabled?: boolean
@@ -63,6 +63,7 @@ const AppPublisher = ({
   const [published, setPublished] = useState(false)
   const [open, setOpen] = useState(false)
   const appDetail = useAppStore(state => state.appDetail)
+  const [publishedTime, setPublishedTime] = useState<number | undefined>(publishedAt)
   const { app_base_url: appBaseURL = '', access_token: accessToken = '' } = appDetail?.site ?? {}
   const appMode = (appDetail?.mode !== 'completion' && appDetail?.mode !== 'workflow') ? 'chat' : appDetail.mode
   const appURL = `${appBaseURL}/${appMode}/${accessToken}`
@@ -76,6 +77,7 @@ const AppPublisher = ({
     try {
       await onPublish?.(modelAndParameter)
       setPublished(true)
+      setPublishedTime(Date.now())
     }
     catch (e) {
       setPublished(false)
@@ -119,33 +121,32 @@ const AppPublisher = ({
     >
       <PortalToFollowElemTrigger onClick={handleTrigger}>
         <Button
-          type='primary'
-          className={`
-            pl-3 pr-2 py-0 h-8 text-[13px] font-medium
-            ${disabled && 'cursor-not-allowed opacity-50'}
-          `}
+          variant='primary'
+          className='pl-3 pr-2'
+          disabled={disabled}
         >
           {t('workflow.common.publish')}
-          <ChevronDown className='ml-0.5' />
+          <RiArrowDownSLine className='w-4 h-4 ml-0.5' />
         </Button>
       </PortalToFollowElemTrigger>
       <PortalToFollowElemContent className='z-[11]'>
         <div className='w-[336px] bg-white rounded-2xl border-[0.5px] border-gray-200 shadow-xl'>
           <div className='p-4 pt-3'>
             <div className='flex items-center h-6 text-xs font-medium text-gray-500 uppercase'>
-              {publishedAt ? t('workflow.common.latestPublished') : t('workflow.common.currentDraftUnpublished')}
+              {publishedTime ? t('workflow.common.latestPublished') : t('workflow.common.currentDraftUnpublished')}
             </div>
-            {publishedAt
+            {publishedTime
               ? (
                 <div className='flex justify-between items-center h-[18px]'>
                   <div className='flex items-center mt-[3px] mb-[3px] leading-[18px] text-[13px] font-medium text-gray-700'>
-                    {t('workflow.common.publishedAt')} {formatTimeFromNow(publishedAt)}
+                    {t('workflow.common.publishedAt')} {formatTimeFromNow(publishedTime)}
                   </div>
                   <Button
                     className={`
-                      ml-2 px-2 py-0 h-6 shadow-xs rounded-md text-xs font-medium text-primary-600 border-[0.5px] bg-white border-gray-200
+                      ml-2 px-2 text-primary-600
                       ${published && 'text-primary-300 border-gray-100'}
                     `}
+                    size='small'
                     onClick={handleRestore}
                     disabled={published}
                   >
@@ -168,29 +169,26 @@ const AppPublisher = ({
               )
               : (
                 <Button
-                  type='primary'
-                  className={classNames(
-                    'mt-3 px-3 py-0 w-full h-8 border-[0.5px] border-primary-700 rounded-lg text-[13px] font-medium',
-                    (publishDisabled || published) && 'border-transparent',
-                  )}
+                  variant='primary'
+                  className='w-full mt-3'
                   onClick={() => handlePublish()}
                   disabled={publishDisabled || published}
                 >
                   {
                     published
                       ? t('workflow.common.published')
-                      : publishedAt ? t('workflow.common.update') : t('workflow.common.publish')
+                      : publishedTime ? t('workflow.common.update') : t('workflow.common.publish')
                   }
                 </Button>
               )
             }
           </div>
           <div className='p-4 pt-3 border-t-[0.5px] border-t-black/5'>
-            <SuggestedAction disabled={!publishedAt} link={appURL} icon={<PlayCircle />}>{t('workflow.common.runApp')}</SuggestedAction>
+            <SuggestedAction disabled={!publishedTime} link={appURL} icon={<PlayCircle />}>{t('workflow.common.runApp')}</SuggestedAction>
             {appDetail?.mode === 'workflow'
               ? (
                 <SuggestedAction
-                  disabled={!publishedAt}
+                  disabled={!publishedTime}
                   link={`${appURL}${appURL.includes('?') ? '&' : '?'}mode=batch`}
                   icon={<LeftIndent02 className='w-4 h-4' />}
                 >
@@ -203,22 +201,22 @@ const AppPublisher = ({
                     setEmbeddingModalOpen(true)
                     handleTrigger()
                   }}
-                  disabled={!publishedAt}
+                  disabled={!publishedTime}
                   icon={<CodeBrowser className='w-4 h-4' />}
                 >
                   {t('workflow.common.embedIntoSite')}
                 </SuggestedAction>
               )}
-            <SuggestedAction disabled={!publishedAt} link='./develop' icon={<FileText className='w-4 h-4' />}>{t('workflow.common.accessAPIReference')}</SuggestedAction>
+            <SuggestedAction disabled={!publishedTime} link='./develop' icon={<FileText className='w-4 h-4' />}>{t('workflow.common.accessAPIReference')}</SuggestedAction>
             {appDetail?.mode === 'workflow' && (
               <WorkflowToolConfigureButton
-                disabled={!publishedAt}
+                disabled={!publishedTime}
                 published={!!toolPublished}
                 detailNeedUpdate={!!toolPublished && published}
                 workflowAppId={appDetail?.id}
                 icon={{
-                  content: appDetail?.icon,
-                  background: appDetail?.icon_background,
+                  content: (appDetail.icon_type === 'image' ? '🤖' : appDetail?.icon) || '🤖',
+                  background: (appDetail.icon_type === 'image' ? appDefaultIconBackground : appDetail?.icon_background) || appDefaultIconBackground,
                 }}
                 name={appDetail?.name}
                 description={appDetail?.description}
@@ -231,6 +229,7 @@ const AppPublisher = ({
         </div>
       </PortalToFollowElemContent>
       <EmbeddedModal
+        siteInfo={appDetail?.site}
         isShow={embeddingModalOpen}
         onClose={() => setEmbeddingModalOpen(false)}
         appBaseUrl={appBaseURL}

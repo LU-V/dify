@@ -11,6 +11,7 @@ from core.model_manager import ModelInstance, ModelManager
 from core.model_runtime.entities.model_entities import ModelFeature, ModelType
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
 from core.rag.retrieval.dataset_retrieval import DatasetRetrieval
+from core.rag.retrieval.retrival_methods import RetrievalMethod
 from core.workflow.entities.base_node_data_entities import BaseNodeData
 from core.workflow.entities.node_entities import NodeRunResult, NodeType
 from core.workflow.entities.variable_pool import VariablePool
@@ -21,7 +22,7 @@ from models.dataset import Dataset, Document, DocumentSegment
 from models.workflow import WorkflowNodeExecutionStatus
 
 default_retrieval_model = {
-    'search_method': 'semantic_search',
+    'search_method': RetrievalMethod.SEMANTIC_SEARCH.value,
     'reranking_enable': False,
     'reranking_model': {
         'reranking_provider_name': '',
@@ -40,7 +41,8 @@ class KnowledgeRetrievalNode(BaseNode):
         node_data: KnowledgeRetrievalNodeData = cast(self._node_data_cls, self.node_data)
 
         # extract variables
-        query = variable_pool.get_variable_value(variable_selector=node_data.query_variable_selector)
+        variable = variable_pool.get_any(node_data.query_variable_selector)
+        query = variable
         variables = {
             'query': query
         }
@@ -136,20 +138,48 @@ class KnowledgeRetrievalNode(BaseNode):
                     planning_strategy=planning_strategy
                 )
         elif node_data.retrieval_mode == DatasetRetrieveConfigEntity.RetrieveStrategy.MULTIPLE.value:
+            if node_data.multiple_retrieval_config.reranking_mode == 'reranking_model':
+                reranking_model = {
+                    'reranking_provider_name': node_data.multiple_retrieval_config.reranking_model.provider,
+                    'reranking_model_name': node_data.multiple_retrieval_config.reranking_model.model
+                }
+                weights = None
+            elif node_data.multiple_retrieval_config.reranking_mode == 'weighted_score':
+                reranking_model = None
+                weights = {
+                    'vector_setting': {
+                        "vector_weight": node_data.multiple_retrieval_config.weights.vector_setting.vector_weight,
+                        "embedding_provider_name": node_data.multiple_retrieval_config.weights.vector_setting.embedding_provider_name,
+                        "embedding_model_name": node_data.multiple_retrieval_config.weights.vector_setting.embedding_model_name,
+                    },
+                    'keyword_setting': {
+                        "keyword_weight": node_data.multiple_retrieval_config.weights.keyword_setting.keyword_weight
+                    }
+                }
+            else:
+                reranking_model = None
+                weights = None
             all_documents = dataset_retrieval.multiple_retrieve(self.app_id, self.tenant_id, self.user_id,
                                                                 self.user_from.value,
                                                                 available_datasets, query,
                                                                 node_data.multiple_retrieval_config.top_k,
                                                                 node_data.multiple_retrieval_config.score_threshold,
-                                                                node_data.multiple_retrieval_config.reranking_model.provider,
-                                                                node_data.multiple_retrieval_config.reranking_model.model)
+                                                                node_data.multiple_retrieval_config.reranking_mode,
+                                                                reranking_model,
+                                                                weights,
+                                                                node_data.multiple_retrieval_config.reranking_enable,
+                                                                )
 
         context_list = []
         if all_documents:
             document_score_list = {}
+            page_number_list = {}
             for item in all_documents:
                 if item.metadata.get('score'):
                     document_score_list[item.metadata['doc_id']] = item.metadata['score']
+                # both 'page' and 'score' are metadata fields
+                if item.metadata.get('page'):
+                    page_number_list[item.metadata['doc_id']] = item.metadata['page']
 
             index_node_ids = [document.metadata['doc_id'] for document in all_documents]
             segments = DocumentSegment.query.filter(
@@ -173,9 +203,9 @@ class KnowledgeRetrievalNode(BaseNode):
                                                      Document.enabled == True,
                                                      Document.archived == False,
                                                      ).first()
+
                     resource_number = 1
                     if dataset and document:
-
                         source = {
                             'metadata': {
                                 '_source': 'knowledge',
@@ -185,6 +215,7 @@ class KnowledgeRetrievalNode(BaseNode):
                                 'document_id': document.id,
                                 'document_name': document.name,
                                 'document_data_source_type': document.data_source_type,
+                                'page': page_number_list.get(segment.index_node_id, None),
                                 'segment_id': segment.id,
                                 'retriever_from': 'workflow',
                                 'score': document_score_list.get(segment.index_node_id, None),

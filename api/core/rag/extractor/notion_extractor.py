@@ -3,13 +3,13 @@ import logging
 from typing import Any, Optional
 
 import requests
-from flask import current_app
 
+from configs import dify_config
 from core.rag.extractor.extractor_base import BaseExtractor
 from core.rag.models.document import Document
 from extensions.ext_database import db
 from models.dataset import Document as DocumentModel
-from models.source import DataSourceBinding
+from models.source import DataSourceOauthBinding
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class NotionExtractor(BaseExtractor):
             self._notion_access_token = self._get_access_token(tenant_id,
                                                                self._notion_workspace_id)
             if not self._notion_access_token:
-                integration_token = current_app.config.get('NOTION_INTEGRATION_TOKEN')
+                integration_token = dify_config.NOTION_INTEGRATION_TOKEN
                 if integration_token is None:
                     raise ValueError(
                         "Must specify `integration_token` or set environment "
@@ -140,11 +140,10 @@ class NotionExtractor(BaseExtractor):
 
     def _get_notion_block_data(self, page_id: str) -> list[str]:
         result_lines_arr = []
-        cur_block_id = page_id
+        start_cursor = None
+        block_url = BLOCK_CHILD_URL_TMPL.format(block_id=page_id)
         while True:
-            block_url = BLOCK_CHILD_URL_TMPL.format(block_id=cur_block_id)
-            query_dict: dict[str, Any] = {}
-
+            query_dict: dict[str, Any] = {} if not start_cursor else {'start_cursor': start_cursor}
             res = requests.request(
                 "GET",
                 block_url,
@@ -153,7 +152,7 @@ class NotionExtractor(BaseExtractor):
                     "Content-Type": "application/json",
                     "Notion-Version": "2022-06-28",
                 },
-                json=query_dict
+                params=query_dict
             )
             data = res.json()
             for result in data["results"]:
@@ -191,16 +190,16 @@ class NotionExtractor(BaseExtractor):
             if data["next_cursor"] is None:
                 break
             else:
-                cur_block_id = data["next_cursor"]
+                start_cursor = data["next_cursor"]
         return result_lines_arr
 
     def _read_block(self, block_id: str, num_tabs: int = 0) -> str:
         """Read a block."""
         result_lines_arr = []
-        cur_block_id = block_id
+        start_cursor = None
+        block_url = BLOCK_CHILD_URL_TMPL.format(block_id=block_id)
         while True:
-            block_url = BLOCK_CHILD_URL_TMPL.format(block_id=cur_block_id)
-            query_dict: dict[str, Any] = {}
+            query_dict: dict[str, Any] = {} if not start_cursor else {'start_cursor': start_cursor}
 
             res = requests.request(
                 "GET",
@@ -210,7 +209,7 @@ class NotionExtractor(BaseExtractor):
                     "Content-Type": "application/json",
                     "Notion-Version": "2022-06-28",
                 },
-                json=query_dict
+                params=query_dict
             )
             data = res.json()
             if 'results' not in data or data["results"] is None:
@@ -249,7 +248,7 @@ class NotionExtractor(BaseExtractor):
             if data["next_cursor"] is None:
                 break
             else:
-                cur_block_id = data["next_cursor"]
+                start_cursor = data["next_cursor"]
 
         result_lines = "\n".join(result_lines_arr)
         return result_lines
@@ -258,10 +257,10 @@ class NotionExtractor(BaseExtractor):
         """Read table rows."""
         done = False
         result_lines_arr = []
-        cur_block_id = block_id
+        start_cursor = None
+        block_url = BLOCK_CHILD_URL_TMPL.format(block_id=block_id)
         while not done:
-            block_url = BLOCK_CHILD_URL_TMPL.format(block_id=cur_block_id)
-            query_dict: dict[str, Any] = {}
+            query_dict: dict[str, Any] = {} if not start_cursor else {'start_cursor': start_cursor}
 
             res = requests.request(
                 "GET",
@@ -271,7 +270,7 @@ class NotionExtractor(BaseExtractor):
                     "Content-Type": "application/json",
                     "Notion-Version": "2022-06-28",
                 },
-                json=query_dict
+                params=query_dict
             )
             data = res.json()
             # get table headers text
@@ -282,25 +281,30 @@ class NotionExtractor(BaseExtractor):
                     for table_header_cell_text in tabel_header_cell:
                         text = table_header_cell_text["text"]["content"]
                         table_header_cell_texts.append(text)
-            # get table columns text and format
+                else:
+                    table_header_cell_texts.append('')
+            # Initialize Markdown table with headers
+            markdown_table = "| " + " | ".join(table_header_cell_texts) + " |\n"
+            markdown_table += "| " + " | ".join(['---'] * len(table_header_cell_texts)) + " |\n"
+
+            # Process data to format each row in Markdown table format
             results = data["results"]
             for i in range(len(results) - 1):
                 column_texts = []
-                tabel_column_cells = data["results"][i + 1]['table_row']['cells']
-                for j in range(len(tabel_column_cells)):
-                    if tabel_column_cells[j]:
-                        for table_column_cell_text in tabel_column_cells[j]:
+                table_column_cells = data["results"][i + 1]['table_row']['cells']
+                for j in range(len(table_column_cells)):
+                    if table_column_cells[j]:
+                        for table_column_cell_text in table_column_cells[j]:
                             column_text = table_column_cell_text["text"]["content"]
-                            column_texts.append(f'{table_header_cell_texts[j]}:{column_text}')
-
-                cur_result_text = "\n".join(column_texts)
-                result_lines_arr.append(cur_result_text)
-
+                            column_texts.append(column_text)
+                # Add row to Markdown table
+                markdown_table += "| " + " | ".join(column_texts) + " |\n"
+            result_lines_arr.append(markdown_table)
             if data["next_cursor"] is None:
                 done = True
                 break
             else:
-                cur_block_id = data["next_cursor"]
+                start_cursor = data["next_cursor"]
 
         result_lines = "\n".join(result_lines_arr)
         return result_lines
@@ -345,12 +349,12 @@ class NotionExtractor(BaseExtractor):
 
     @classmethod
     def _get_access_token(cls, tenant_id: str, notion_workspace_id: str) -> str:
-        data_source_binding = DataSourceBinding.query.filter(
+        data_source_binding = DataSourceOauthBinding.query.filter(
             db.and_(
-                DataSourceBinding.tenant_id == tenant_id,
-                DataSourceBinding.provider == 'notion',
-                DataSourceBinding.disabled == False,
-                DataSourceBinding.source_info['workspace_id'] == f'"{notion_workspace_id}"'
+                DataSourceOauthBinding.tenant_id == tenant_id,
+                DataSourceOauthBinding.provider == 'notion',
+                DataSourceOauthBinding.disabled == False,
+                DataSourceOauthBinding.source_info['workspace_id'] == f'"{notion_workspace_id}"'
             )
         ).first()
 

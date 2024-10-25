@@ -35,7 +35,7 @@ export const useChat = (
   const { notify } = useToastContext()
   const { handleRun } = useWorkflowRun()
   const hasStopResponded = useRef(false)
-  const connversationId = useRef('')
+  const conversationId = useRef('')
   const taskIdRef = useRef('')
   const [chatList, setChatList] = useState<ChatItem[]>(prevChatList || [])
   const chatListRef = useRef<ChatItem[]>(prevChatList || [])
@@ -100,7 +100,7 @@ export const useChat = (
   }, [handleResponding, stopChat])
 
   const handleRestart = useCallback(() => {
-    connversationId.current = ''
+    conversationId.current = ''
     taskIdRef.current = ''
     handleStop()
     const newChatList = config?.opening_statement
@@ -185,7 +185,7 @@ export const useChat = (
     handleResponding(true)
 
     const bodyParams = {
-      conversation_id: connversationId.current,
+      conversation_id: conversationId.current,
       ...params,
     }
     if (bodyParams?.files?.length) {
@@ -214,7 +214,7 @@ export const useChat = (
           }
 
           if (isFirstMessage && newConversationId)
-            connversationId.current = newConversationId
+            conversationId.current = newConversationId
 
           taskIdRef.current = taskId
           if (messageId)
@@ -248,11 +248,16 @@ export const useChat = (
           }
 
           if (config?.suggested_questions_after_answer?.enabled && !hasStopResponded.current && onGetSuggestedQuestions) {
-            const { data }: any = await onGetSuggestedQuestions(
-              responseItem.id,
-              newAbortController => suggestedQuestionsAbortControllerRef.current = newAbortController,
-            )
-            setSuggestQuestions(data)
+            try {
+              const { data }: any = await onGetSuggestedQuestions(
+                responseItem.id,
+                newAbortController => suggestedQuestionsAbortControllerRef.current = newAbortController,
+              )
+              setSuggestQuestions(data)
+            }
+            catch (error) {
+              setSuggestQuestions([])
+            }
           }
         },
         onMessageEnd: (messageEnd) => {
@@ -403,7 +408,7 @@ export const useChat = (
   }, [handleRun, handleResponding, handleUpdateChatList, notify, t, updateCurrentQA, config.suggested_questions_after_answer?.enabled])
 
   return {
-    conversationId: connversationId.current,
+    conversationId: conversationId.current,
     chatList,
     handleSend,
     handleStop,

@@ -1,6 +1,6 @@
 const translation = {
   common: {
-    welcome: '欢迎使用',
+    welcome: '',
     appUnavailable: '应用不可用',
     appUnkonwError: '应用不可用',
   },
@@ -32,7 +32,6 @@ const translation = {
       create: '运行一次',
       batch: '批量运行',
       saved: '已保存',
-
     },
     savedNoData: {
       title: '您还没有保存结果！',

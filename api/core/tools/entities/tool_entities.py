@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Optional, Union, cast
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from core.tools.entities.common_entities import I18nObject
 
@@ -46,7 +46,7 @@ class ToolProviderType(Enum):
             if mode.value == value:
                 return mode
         raise ValueError(f'invalid mode value {value}')
-    
+
 class ApiProviderSchemaType(Enum):
     """
     Enum class for api provider schema type.
@@ -68,7 +68,7 @@ class ApiProviderSchemaType(Enum):
             if mode.value == value:
                 return mode
         raise ValueError(f'invalid mode value {value}')
-    
+
 class ApiProviderAuthType(Enum):
     """
     Enum class for api provider auth type.
@@ -95,6 +95,7 @@ class ToolInvokeMessage(BaseModel):
         IMAGE = "image"
         LINK = "link"
         BLOB = "blob"
+        JSON = "json"
         IMAGE_LINK = "image_link"
         FILE_VAR = "file_var"
 
@@ -102,8 +103,8 @@ class ToolInvokeMessage(BaseModel):
     """
         plain text, image url or link url
     """
-    message: Union[str, bytes] = None
-    meta: dict[str, Any] = None
+    message: str | bytes | dict | None = None
+    meta: dict[str, Any] | None = None
     save_as: str = ''
 
 class ToolInvokeMessageBinary(BaseModel):
@@ -115,6 +116,14 @@ class ToolInvokeMessageBinary(BaseModel):
 class ToolParameterOption(BaseModel):
     value: str = Field(..., description="The value of the option")
     label: I18nObject = Field(..., description="The label of the option")
+
+    @field_validator('value', mode='before')
+    @classmethod
+    def transform_id_to_str(cls, value) -> str:
+        if not isinstance(value, str):
+            return str(value)
+        else:
+            return value
 
 
 class ToolParameter(BaseModel):
@@ -133,19 +142,20 @@ class ToolParameter(BaseModel):
 
     name: str = Field(..., description="The name of the parameter")
     label: I18nObject = Field(..., description="The label presented to the user")
-    human_description: I18nObject = Field(..., description="The description presented to the user")
+    human_description: Optional[I18nObject] = Field(None, description="The description presented to the user")
+    placeholder: Optional[I18nObject] = Field(None, description="The placeholder presented to the user")
     type: ToolParameterType = Field(..., description="The type of the parameter")
     form: ToolParameterForm = Field(..., description="The form of the parameter, schema/form/llm")
     llm_description: Optional[str] = None
     required: Optional[bool] = False
-    default: Optional[Union[int, str]] = None
+    default: Optional[Union[float, int, str]] = None
     min: Optional[Union[float, int]] = None
     max: Optional[Union[float, int]] = None
     options: Optional[list[ToolParameterOption]] = None
 
     @classmethod
-    def get_simple_instance(cls, 
-                       name: str, llm_description: str, type: ToolParameterType, 
+    def get_simple_instance(cls,
+                       name: str, llm_description: str, type: ToolParameterType,
                        required: bool, options: Optional[list[str]] = None) -> 'ToolParameter':
         """
             get a simple tool parameter
@@ -212,7 +222,7 @@ class ToolProviderCredentials(BaseModel):
                 if mode.value == value:
                     return mode
             raise ValueError(f'invalid mode value {value}')
-        
+
         @staticmethod
         def default(value: str) -> str:
             return ""
@@ -278,9 +288,9 @@ class ToolRuntimeVariablePool(BaseModel):
             'conversation_id': self.conversation_id,
             'user_id': self.user_id,
             'tenant_id': self.tenant_id,
-            'pool': [variable.dict() for variable in self.pool],
+            'pool': [variable.model_dump() for variable in self.pool],
         }
-    
+
     def set_text(self, tool_name: str, name: str, value: str) -> None:
         """
             set a text variable
@@ -291,7 +301,7 @@ class ToolRuntimeVariablePool(BaseModel):
                     variable = cast(ToolRuntimeTextVariable, variable)
                     variable.value = value
                     return
-                
+
         variable = ToolRuntimeTextVariable(
             type=ToolRuntimeVariableType.TEXT,
             name=name,
@@ -324,7 +334,7 @@ class ToolRuntimeVariablePool(BaseModel):
                     variable = cast(ToolRuntimeImageVariable, variable)
                     variable.value = value
                     return
-                
+
         variable = ToolRuntimeImageVariable(
             type=ToolRuntimeVariableType.IMAGE,
             name=name,
@@ -378,21 +388,21 @@ class ToolInvokeMeta(BaseModel):
         Get an empty instance of ToolInvokeMeta
         """
         return cls(time_cost=0.0, error=None, tool_config={})
-    
+
     @classmethod
     def error_instance(cls, error: str) -> 'ToolInvokeMeta':
         """
         Get an instance of ToolInvokeMeta with error
         """
         return cls(time_cost=0.0, error=error, tool_config={})
-    
+
     def to_dict(self) -> dict:
         return {
             'time_cost': self.time_cost,
             'error': self.error,
             'tool_config': self.tool_config,
         }
-    
+
 class ToolLabel(BaseModel):
     """
     Tool label
