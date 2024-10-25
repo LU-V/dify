@@ -24,7 +24,7 @@ FROM base AS packages
 # RUN sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libpq-dev build-essential
+    && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
 
 # Install Python dependencies
 COPY pyproject.toml poetry.lock ./
@@ -51,7 +51,7 @@ WORKDIR /app/api
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl nodejs libgmp-dev libmpfr-dev libmpc-dev \
     # if you located in China, you can use aliyun mirror to speed up
-    # && echo "deb http://mirrors.aliyun.com/debian testing main" > /etc/apt/sources.list \
+    #&& echo "deb http://mirrors.aliyun.com/debian testing main" > /etc/apt/sources.list \
     && echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list \
     && apt-get update \
     # For Security
