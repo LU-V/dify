@@ -37,6 +37,11 @@ const translation = {
     params: 'Параметри',
     duplicate: 'дублікат',
     rename: 'Перейменувати',
+    audioSourceUnavailable: 'AudioSource недоступний',
+    copyImage: 'Скопіювати зображення',
+    openInNewTab: 'Відкрити в новій вкладці',
+    zoomOut: 'Зменшити масштаб',
+    zoomIn: 'Збільшити масштаб',
   },
   placeholder: {
     input: 'Будь ласка, введіть текст',
@@ -166,6 +171,9 @@ const translation = {
     delete: 'Видалити обліковий запис',
     deleteTip: 'Видалення вашого облікового запису призведе до остаточного видалення всіх ваших даних, і їх неможливо буде відновити.',
     deleteConfirmTip: 'Щоб підтвердити, будь ласка, надішліть наступне з вашої зареєстрованої електронної пошти на ',
+    account: 'Рахунок',
+    studio: 'Студія Dify',
+    myAccount: 'Особистий кабінет',
   },
   members: {
     team: 'Команда',
@@ -191,14 +199,14 @@ const translation = {
     invitationSent: 'Запрошення надіслано',
     invitationSentTip: 'Запрошення надіслано, і вони можуть увійти в Dify, щоб отримати доступ до даних вашої команди.',
     invitationLink: 'Посилання на запрошення',
-    failedinvitationEmails: 'Наступних користувачів не було успішно запрошено',
+    failedInvitationEmails: 'Наступних користувачів не було успішно запрошено',
     ok: 'ОК',
     removeFromTeam: 'Видалити з команди',
     removeFromTeamTip: 'Буде видалено доступ до команди',
     setAdmin: 'Призначити адміністратором',
     setMember: 'Встановити як звичайного члена',
     setEditor: 'Встановити як Редактор',
-    disinvite: 'Скасувати запрошення',
+    disInvite: 'Скасувати запрошення',
     deleteMember: 'Видалити учасника',
     you: '(Ви)',
     builder: 'Будівник',
@@ -496,6 +504,7 @@ const translation = {
       vectorHash: 'Хеш вектора:',
       hitScore: 'Оцінка звернення:',
     },
+    inputPlaceholder: 'Поговоріть з ботом',
   },
   promptEditor: {
     placeholder: 'Пишіть свої підказки тут, вводьте \'{\', щоб вставити змінну чи \'/\', щоб вставити блок-підказку',
@@ -572,6 +581,16 @@ const translation = {
   errorMsg: {
     fieldRequired: '{{field}} є обов\'язковим',
     urlError: 'URL-адреса повинна починатися з http:// або https://',
+  },
+  fileUploader: {
+    pasteFileLink: 'Вставити посилання на файл',
+    pasteFileLinkInvalid: 'Неприпустиме посилання на файл',
+    uploadFromComputer: 'Локальне завантаження',
+    uploadFromComputerLimit: 'Файл завантаження не може перевищувати {{size}}',
+    pasteFileLinkInputPlaceholder: 'Введіть URL-адресу...',
+    fileExtensionNotSupport: 'Розширення файлу не підтримується',
+    uploadFromComputerReadError: 'Не вдалося прочитати файл, будь ласка, спробуйте ще раз.',
+    uploadFromComputerUploadError: 'Не вдалося завантажити файл, будь ласка, завантажте ще раз.',
   },
 }
 

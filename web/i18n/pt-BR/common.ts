@@ -37,6 +37,11 @@ const translation = {
     params: 'Parâmetros',
     duplicate: 'Duplicada',
     rename: 'Renomear',
+    audioSourceUnavailable: 'AudioSource não está disponível',
+    zoomOut: 'Diminuir o zoom',
+    zoomIn: 'Ampliar',
+    copyImage: 'Copiar imagem',
+    openInNewTab: 'Abrir em nova guia',
   },
   placeholder: {
     input: 'Por favor, insira',
@@ -166,6 +171,9 @@ const translation = {
     delete: 'Excluir conta',
     deleteTip: 'Excluir sua conta apagará permanentemente todos os seus dados e eles não poderão ser recuperados.',
     deleteConfirmTip: 'Para confirmar, envie o seguinte do seu e-mail registrado para ',
+    myAccount: 'Minha Conta',
+    account: 'Conta',
+    studio: 'Estúdio Dify',
   },
   members: {
     team: 'Equipe',
@@ -191,14 +199,14 @@ const translation = {
     invitationSent: 'Convite enviado',
     invitationSentTip: 'Convite enviado e eles podem fazer login no Dify para acessar os dados da sua equipe.',
     invitationLink: 'Link do Convite',
-    failedinvitationEmails: 'Os seguintes usuários não foram convidados com sucesso',
+    failedInvitationEmails: 'Os seguintes usuários não foram convidados com sucesso',
     ok: 'OK',
     removeFromTeam: 'Remover da equipe',
     removeFromTeamTip: 'Removerá o acesso da equipe',
     setAdmin: 'Definir como administrador',
     setMember: 'Definir como membro comum',
     setEditor: 'Definir como editor',
-    disinvite: 'Cancelar o convite',
+    disInvite: 'Cancelar o convite',
     deleteMember: 'Excluir Membro',
     you: '(Você)',
     datasetOperatorTip: 'Só pode gerenciar a base de dados de conhecimento',
@@ -495,6 +503,7 @@ const translation = {
       vectorHash: 'Hash de vetor:',
       hitScore: 'Pontuação de recuperação:',
     },
+    inputPlaceholder: 'Fale com o bot',
   },
   promptEditor: {
     placeholder: 'Escreva sua palavra de incentivo aqui, digite \'{\' para inserir uma variável, digite \'/\' para inserir um bloco de conteúdo de incentivo',
@@ -571,6 +580,16 @@ const translation = {
   errorMsg: {
     fieldRequired: '{{field}} é obrigatório',
     urlError: 'URL deve começar com http:// ou https://',
+  },
+  fileUploader: {
+    uploadFromComputer: 'Upload local',
+    pasteFileLink: 'Colar link do arquivo',
+    pasteFileLinkInputPlaceholder: 'Digite o URL...',
+    pasteFileLinkInvalid: 'Link de arquivo inválido',
+    fileExtensionNotSupport: 'Extensão de arquivo não suportada',
+    uploadFromComputerReadError: 'Falha na leitura do arquivo, tente novamente.',
+    uploadFromComputerLimit: 'Carregar arquivo não pode exceder {{size}}',
+    uploadFromComputerUploadError: 'Falha no upload do arquivo, faça o upload novamente.',
   },
 }
 

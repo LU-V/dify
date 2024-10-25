@@ -37,6 +37,11 @@ const translation = {
     params: 'Paramètres',
     duplicate: 'Dupliquer',
     rename: 'Renommer',
+    audioSourceUnavailable: 'AudioSource n’est pas disponible',
+    zoomOut: 'Zoom arrière',
+    zoomIn: 'Zoom avant',
+    openInNewTab: 'Ouvrir dans un nouvel onglet',
+    copyImage: 'Copier l’image',
   },
   placeholder: {
     input: 'Veuillez entrer',
@@ -166,6 +171,9 @@ const translation = {
     delete: 'Supprimer le compte',
     deleteTip: 'La suppression de votre compte effacera définitivement toutes vos données et elles ne pourront pas être récupérées.',
     deleteConfirmTip: 'Pour confirmer, veuillez envoyer ce qui suit depuis votre adresse e-mail enregistrée à ',
+    myAccount: 'Mon compte',
+    account: 'Compte',
+    studio: 'Dify Studio',
   },
   members: {
     team: 'Équipe',
@@ -191,14 +199,14 @@ const translation = {
     invitationSent: 'Invitation envoyée',
     invitationSentTip: 'Invitation envoyée, et ils peuvent se connecter à Dify pour accéder aux données de votre équipe.',
     invitationLink: 'Lien d\'invitation',
-    failedinvitationEmails: 'Les utilisateurs ci-dessous n\'ont pas été invités avec succès',
+    failedInvitationEmails: 'Les utilisateurs ci-dessous n\'ont pas été invités avec succès',
     ok: 'D\'accord',
     removeFromTeam: 'Retirer de l\'équipe',
     removeFromTeamTip: 'Supprimera l\'accès de l\'équipe',
     setAdmin: 'Définir comme administrateur',
     setMember: 'Définir en tant que membre ordinaire',
     setEditor: 'Définir en tant qu\'éditeur',
-    disinvite: 'Annuler l\'invitation',
+    disInvite: 'Annuler l\'invitation',
     deleteMember: 'Supprimer Membre',
     you: '(Vous)',
     builder: 'Constructeur',
@@ -495,6 +503,7 @@ const translation = {
       vectorHash: 'Hachage vectoriel:',
       hitScore: 'Score de Récupération:',
     },
+    inputPlaceholder: 'Parler au bot',
   },
   promptEditor: {
     placeholder: 'Écrivez votre mot d\'invite ici, entrez \'{\' pour insérer une variable, entrez \'/\' pour insérer un bloc de contenu d\'invite',
@@ -571,6 +580,16 @@ const translation = {
   errorMsg: {
     fieldRequired: '{{field}} est obligatoire',
     urlError: 'L’URL doit commencer par http:// ou https://',
+  },
+  fileUploader: {
+    pasteFileLinkInputPlaceholder: 'Entrez l’URL...',
+    uploadFromComputer: 'Téléchargement local',
+    pasteFileLink: 'Coller le lien du fichier',
+    uploadFromComputerReadError: 'Échec de la lecture du fichier, veuillez réessayer.',
+    uploadFromComputerUploadError: 'Le téléchargement du fichier a échoué, veuillez le télécharger à nouveau.',
+    fileExtensionNotSupport: 'Extension de fichier non prise en charge',
+    pasteFileLinkInvalid: 'Lien de fichier non valide',
+    uploadFromComputerLimit: 'Le fichier de téléchargement ne peut pas dépasser {{size}}',
   },
 }
 

@@ -37,6 +37,11 @@ const translation = {
     params: '매개변수',
     duplicate: '중복',
     rename: '이름 바꾸기',
+    audioSourceUnavailable: '오디오 소스를 사용할 수 없습니다.',
+    openInNewTab: '새 탭에서 열기',
+    zoomIn: '확대',
+    copyImage: '이미지 복사',
+    zoomOut: '축소',
   },
   placeholder: {
     input: '입력해주세요',
@@ -162,6 +167,9 @@ const translation = {
     delete: '계정 삭제',
     deleteTip: '계정을 삭제하면 모든 데이터가 영구적으로 지워지며 복구할 수 없습니다.',
     deleteConfirmTip: '확인하려면 등록된 이메일에서 다음 내용을 로 보내주세요 ',
+    myAccount: '내 계정',
+    studio: '디파이 스튜디오',
+    account: '계좌',
   },
   members: {
     team: '팀',
@@ -187,14 +195,14 @@ const translation = {
     invitationSent: '초대가 전송되었습니다',
     invitationSentTip: '초대가 전송되었으며, 그들은 Dify에 로그인하여 당신의 팀 데이터에 액세스할 수 있습니다.',
     invitationLink: '초대 링크',
-    failedinvitationEmails: '다음 사용자들은 성공적으로 초대되지 않았습니다',
+    failedInvitationEmails: '다음 사용자들은 성공적으로 초대되지 않았습니다',
     ok: '확인',
     removeFromTeam: '팀에서 제거',
     removeFromTeamTip: '팀 액세스가 제거됩니다',
     setAdmin: '관리자 설정',
     setMember: '일반 멤버 설정',
     setEditor: '편집자 설정',
-    disinvite: '초대 취소',
+    disInvite: '초대 취소',
     deleteMember: '멤버 삭제',
     you: '(나)',
     datasetOperator: '지식 관리자',
@@ -491,6 +499,7 @@ const translation = {
       vectorHash: '벡터 해시:',
       hitScore: '검색 점수:',
     },
+    inputPlaceholder: '봇과 대화',
   },
   promptEditor: {
     placeholder: '여기에 프롬프트 단어를 입력하세요. 변수를 삽입하려면 "{{"를 입력하고, 프롬프트 컨텐츠 블록을 삽입하려면 "/"를 입력하세요.',
@@ -567,6 +576,16 @@ const translation = {
   errorMsg: {
     urlError: 'URL은 http:// 또는 https:// 로 시작해야 합니다.',
     fieldRequired: '{{field}}는 필수입니다.',
+  },
+  fileUploader: {
+    uploadFromComputer: '로컬 업로드',
+    pasteFileLinkInputPlaceholder: 'URL 입력...',
+    pasteFileLinkInvalid: '유효하지 않은 파일 링크',
+    uploadFromComputerReadError: '파일 읽기에 실패했습니다. 다시 시도하십시오.',
+    pasteFileLink: '파일 링크 붙여넣기',
+    fileExtensionNotSupport: '지원되지 않는 파일 확장자',
+    uploadFromComputerLimit: '업로드 파일은 {{size}}를 초과할 수 없습니다.',
+    uploadFromComputerUploadError: '파일 업로드에 실패했습니다. 다시 업로드하십시오.',
   },
 }
 

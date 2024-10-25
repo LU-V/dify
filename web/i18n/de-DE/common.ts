@@ -37,6 +37,11 @@ const translation = {
     params: 'Parameter',
     duplicate: 'Duplikat',
     rename: 'Umbenennen',
+    audioSourceUnavailable: 'AudioSource ist nicht verfügbar',
+    zoomOut: 'Verkleinern',
+    zoomIn: 'Vergrößern',
+    openInNewTab: 'In neuem Tab öffnen',
+    copyImage: 'Bild kopieren',
   },
   placeholder: {
     input: 'Bitte eingeben',
@@ -166,6 +171,9 @@ const translation = {
     delete: 'Konto löschen',
     deleteTip: 'Wenn Sie Ihr Konto löschen, werden alle Ihre Daten dauerhaft gelöscht und können nicht wiederhergestellt werden.',
     deleteConfirmTip: 'Zur Bestätigung senden Sie bitte Folgendes von Ihrer registrierten E-Mail-Adresse an ',
+    myAccount: 'Mein Konto',
+    studio: 'Dify Studio',
+    account: 'Konto',
   },
   members: {
     team: 'Team',
@@ -191,14 +199,14 @@ const translation = {
     invitationSent: 'Einladung gesendet',
     invitationSentTip: 'Einladung gesendet, und sie können sich bei Dify anmelden, um auf Ihre Teamdaten zuzugreifen.',
     invitationLink: 'Einladungslink',
-    failedinvitationEmails: 'Die folgenden Benutzer wurden nicht erfolgreich eingeladen',
+    failedInvitationEmails: 'Die folgenden Benutzer wurden nicht erfolgreich eingeladen',
     ok: 'OK',
     removeFromTeam: 'Vom Team entfernen',
     removeFromTeamTip: 'Wird den Teamzugang entfernen',
     setAdmin: 'Als Administrator einstellen',
     setMember: 'Als normales Mitglied einstellen',
     setEditor: 'Als Editor einstellen',
-    disinvite: 'Einladung widerrufen',
+    disInvite: 'Einladung widerrufen',
     deleteMember: 'Mitglied löschen',
     you: '(Du)',
     setBuilder: 'Als Builder festlegen',
@@ -495,6 +503,7 @@ const translation = {
       vectorHash: 'Vektorhash:',
       hitScore: 'Abrufwertung:',
     },
+    inputPlaceholder: 'Sprechen Sie mit dem Bot',
   },
   promptEditor: {
     placeholder: 'Schreiben Sie hier Ihr Aufforderungswort, geben Sie \'{\' ein, um eine Variable einzufügen, geben Sie \'/\' ein, um einen Aufforderungs-Inhaltsblock einzufügen',
@@ -571,6 +580,16 @@ const translation = {
   errorMsg: {
     fieldRequired: '{{field}} ist erforderlich',
     urlError: 'Die URL sollte mit http:// oder https:// beginnen',
+  },
+  fileUploader: {
+    uploadFromComputer: 'Lokaler Upload',
+    pasteFileLinkInvalid: 'Ungültiger Dateilink',
+    pasteFileLinkInputPlaceholder: 'URL eingeben...',
+    pasteFileLink: 'Dateilink einfügen',
+    uploadFromComputerUploadError: 'Datei-Upload fehlgeschlagen, bitte erneut hochladen.',
+    uploadFromComputerLimit: 'Datei hochladen darf {{size}} nicht überschreiten',
+    uploadFromComputerReadError: 'Lesen der Datei fehlgeschlagen, bitte versuchen Sie es erneut.',
+    fileExtensionNotSupport: 'Dateiendung nicht bedient',
   },
 }
 
