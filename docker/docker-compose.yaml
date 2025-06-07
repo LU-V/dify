@@ -633,7 +633,7 @@ services:
 
   # plugin daemon
   plugin_daemon:
-    image: docker.m.daocloud.io/langgenius/dify-plugin-daemon:0.0.9-local
+    image: docker.m.daocloud.io/langgenius/dify-plugin-daemon:0.0.3-local
     restart: always
     environment:
       # Use the shared environment variables.
