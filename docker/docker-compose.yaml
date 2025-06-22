@@ -516,6 +516,8 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - shared-net     # ✅ 必须加
+
 
   # worker service
   # The Celery worker for processing the queue.
@@ -568,6 +570,9 @@ services:
       ENABLE_WEBSITE_JINAREADER: ${ENABLE_WEBSITE_JINAREADER:-true}
       ENABLE_WEBSITE_FIRECRAWL: ${ENABLE_WEBSITE_FIRECRAWL:-true}
       ENABLE_WEBSITE_WATERCRAWL: ${ENABLE_WEBSITE_WATERCRAWL:-true}
+    networks:
+      - shared-net
+      
   # The postgres database.
   db:
     image: docker.m.daocloud.io/postgres:15-alpine
@@ -676,6 +681,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - default
+      - shared-net     # ✅ 必须加
 
   # ssrf_proxy server
   # for more information, please refer to
@@ -758,6 +766,7 @@ services:
       - '${EXPOSE_NGINX_SSL_PORT:-443}:${NGINX_SSL_PORT:-443}'
     networks:
       - shared-net
+      - default
 
   # The Weaviate vector store.
   weaviate:
