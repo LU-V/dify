@@ -739,7 +739,8 @@ services:
       - ./nginx/docker-entrypoint.sh:/docker-entrypoint-mount.sh
       - ./nginx/ssl:/etc/ssl # cert dir (legacy)
       - /etc/nginx/ssl/innerglowmed:/etc/nginx/ssl/innerglowmed:ro
-      - /srv/www/innerglowmed/innerglow-v2/dist:/srv/www/innerglowmed/innerglow-v2/dist:ro  
+      - /srv/www/innerglowmed/innerglow-v2:/srv/www/innerglowmed/innerglow-v2:ro  
+      
     entrypoint: [ 'sh', '-c', "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
